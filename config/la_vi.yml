@@ -1,6 +1,6 @@
 data:
-  train_data_location: data/vi_lo/Train/train2023
-  eval_data_location:  data/vi_lo/Dev/dev2023
+  train_data_location: data/la_vi/Train/train2023
+  eval_data_location:  data/la_vi/Dev/dev2023
   src_lang: .vi 
   trg_lang: .lo 
 log_file_models: 'model.log'

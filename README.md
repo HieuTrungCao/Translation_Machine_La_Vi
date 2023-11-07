@@ -7,8 +7,8 @@ Dự án MultilingualMT-UET-KC4.0 là dự án open-source được phát triể
 Lưu ý:
 Phiên bản hiện tại chỉ tương thích với python>=3.6
 ```bash
-git clone https://github.com/KCDichDaNgu/KC4.0_MultilingualNMT.git
-cd KC4.0_MultilingualNMT
+git clone https://github.com/HieuTrungCao/Translation_Machine_La_Vi.git
+cd Translation_Machine_La_Vi
 pip install -r requirements.txt
 
 # Quickstart
