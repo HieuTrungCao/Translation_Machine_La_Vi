@@ -61,10 +61,10 @@ Cần phải sửa lại file config en_vi.yml chỉnh siêu tham số và đư�
 ```yaml
 # data location and config section
 data:
-  train_data_location: data/iwslt_en_vi/train
-  eval_data_location:  data/iwslt_en_vi/tst2013
-  src_lang: .en 
-  trg_lang: .vi 
+  train_data_location: data/la_vi/Train/train2023
+  eval_data_location:  data/la_vi/Dev/dev2023
+  src_lang: .vi 
+  trg_lang: .lo 
 log_file_models: 'model.log'
 lowercase: false
 build_vocab_kwargs: # additional arguments for build_vocab. See torchtext.vocab.Vocab for mode details
@@ -111,7 +111,7 @@ maximum_saved_model_train: 5
 Sau đó có thể chạy với câu lệnh:
 
 ```bash
-python -m bin.main train --model Transformer --model_dir $MODEL/en-vi.model --config $CONFIG/en_vi.yml
+python -m bin.main train --model Transformer --model_dir $MODEL/la-vi.model --config $CONFIG/la_vi.yml
 ```
 
 **Note**:
@@ -121,10 +121,10 @@ python -m bin.main train --model Transformer --model_dir $MODEL/en-vi.model --co
 
 ## Bước 3: Dịch 
 
-Mô hình dịch dựa trên thuật toán beam search và lưu bản dịch tại `$your_data_path/translate.en2vi.vi`.
+Mô hình dịch dựa trên thuật toán beam search và lưu bản dịch tại `$your_data_path/translate.la2vi.vi`.
 
 ```bash
-python -m bin.main infer --model Transformer --model_dir $MODEL/en-vi.model --features_file $your_data_path/tst2012.en --predictions_file $your_data_path/translate.en2vi.vi
+python -m bin.main infer --model Transformer --model_dir $MODEL/la-vi.model --features_file $your_data_path/test.lo --predictions_file $your_data_path/translate.la2vi.vi
 ```
 
 ## Bước 4: Đánh giá chất lượng dựa trên điểm BLEU
@@ -132,7 +132,7 @@ python -m bin.main infer --model Transformer --model_dir $MODEL/en-vi.model --fe
 Đánh giá điểm BLEU dựa trên multi-bleu
 
 ```bash
-perl thrid-party/multi-bleu.perl $your_data_path/translate.en2vi.vi < $your_data_path/tst2012.vi
+perl thrid-party/multi-bleu.perl $your_data_path/translate.la2vi.vi < $your_data_path/test.vi
 ```
 
 |        MODEL       | BLEU (Beam Search) |
