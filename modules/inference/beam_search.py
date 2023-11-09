@@ -145,9 +145,9 @@ class BeamSearch(DecodeStrategy):
         
         # zip together with sentences; then output { the token if not unk / the replacement if is }. Note that this will trim the orig version down to repl size.
         zipped = zip(flattened_outputs, replace_tokens)
-        replaced = np.array([ [tok if tok != unknown_token else rpl for rpl, tok in zip(repl, orig)] for orig, repl in zipped ])
+        replaced = np.array([ (tok if tok != unknown_token else rpl for rpl, tok in zip(repl, orig)) for orig, repl in zipped ])
         # reshape back to outputs shape [batch, beam] of list
-        return replaced.reshape((-1, self.beam_size))
+        return replaced.reshape(outputs.shape)
 
 #        for i in range(1, self.max_len):
 #            ix = attn[0, 0, i-1, :].argmax().data
