@@ -147,7 +147,7 @@ class BeamSearch(DecodeStrategy):
         zipped = zip(flattened_outputs, replace_tokens)
         replaced = np.array([ [tok if tok != unknown_token else rpl for rpl, tok in zip(repl, orig)] for orig, repl in zipped ])
         # reshape back to outputs shape [batch, beam] of list
-        return replaced.reshape(outputs.shape)
+        return replaced.reshape((-1, self.beam_size))
 
 #        for i in range(1, self.max_len):
 #            ix = attn[0, 0, i-1, :].argmax().data
