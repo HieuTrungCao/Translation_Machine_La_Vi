@@ -1,8 +1,8 @@
 data:
   train_data_location: data/la_vi/Train/train2023
   eval_data_location:  data/la_vi/Dev/dev2023
-  src_lang: .lo 
-  trg_lang: .vi 
+  src_lang: .vi 
+  trg_lang: .lo 
 log_file_models: 'model.log'
 lowercase: false
 build_vocab_kwargs: # additional arguments for build_vocab. See torchtext.vocab.Vocab for mode details
