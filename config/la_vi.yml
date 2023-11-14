@@ -14,7 +14,7 @@ d_model: 512
 n_layers: 6
 heads: 8
 # inference section
-eval_batch_size: 8
+eval_batch_size: 32
 decode_strategy: BeamSearch
 decode_strategy_kwargs:
   beam_size: 5 # beam search size
