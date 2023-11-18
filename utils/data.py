@@ -5,6 +5,10 @@ import dill as pickle
 import pandas as pd
 from torchtext import data
 
+from laonlp.tokenize import word_tokenize
+
+nltk.download('punkt')
+
 def multiple_replace(dict, text):
   # Create a regular expression  from the dictionary keys
   regex = re.compile("(%s)" % "|".join(map(re.escape, dict.keys())))
@@ -59,13 +63,19 @@ def write_file(file_dir, content):
     f.write(content)
     f.close()
 
+def t_src_tokenizer(sentence):
+    return word_tokenize(sentence.strip())
+
+def t_trg_tokenizer(sentence):
+    return nltk.word_tokenize(sentence.strip())
+
 def create_fields(src_lang, trg_lang):
     
     #print("loading spacy tokenizers...")
     #
     #t_src = tokenize(src_lang)
     #t_trg = tokenize(trg_lang)
-    t_src_tokenizer = t_trg_tokenizer = lambda x: x.strip().split()
+    # t_src_tokenizer = t_trg_tokenizer = lambda x: x.strip().split()
 
     TRG = data.Field(lower=True, tokenize=t_trg_tokenizer, init_token='<sos>', eos_token='<eos>')
     SRC = data.Field(lower=True, tokenize=t_src_tokenizer)

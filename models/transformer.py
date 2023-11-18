@@ -13,7 +13,7 @@ from modules.optim import optimizers, ScheduledOptim
 
 import utils.save as saver
 from utils.decode_old import create_masks, translate_sentence
-#from utils.data import create_fields, create_dataset, read_data, read_file, write_file
+from utils.data import create_fields, create_dataset, read_data, read_file, write_file
 from utils.loss import LabelSmoothingLoss
 from utils.metric import bleu, bleu_batch_iter, bleu_single, bleu_batch
 #from utils.save import load_model_from_path, check_model_in_path, save_and_clear_model, write_model_score, load_model_score, save_model_best_to_path, load_model
@@ -39,7 +39,7 @@ class Transformer(nn.Module):
             # multilingual data with multiple corpus in [data][train] namespace
             self.loader = MultiLoader(opt["data"]["train"], valid=opt["data"].get("valid", None), option=opt)
         # input fields
-        self.SRC, self.TRG = self.loader.build_field(lower=opt.get("lowercase", const.DEFAULT_LOWERCASE))
+        self.SRC, self.TRG = create_fields(data_opt["src_lang"], data_opt["trg_lang"])
 #        self.SRC = data.Field(lower=opt.get("lowercase", const.DEFAULT_LOWERCASE))
 #        self.TRG = data.Field(lower=opt.get("lowercase", const.DEFAULT_LOWERCASE), eos_token='<eos>')
 

@@ -6,3 +6,4 @@ spacy
 PyYAML==5.4.1
 dill
 pandas
+laonlp
