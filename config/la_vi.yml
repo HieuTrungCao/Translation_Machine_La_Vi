@@ -41,5 +41,5 @@ batch_size: 32
 epochs: 40
 printevery: 200
 save_checkpoint_epochs: 1
-maximum_saved_model_eval: 0
+maximum_saved_model_eval: 20
 maximum_saved_model_train: 20
