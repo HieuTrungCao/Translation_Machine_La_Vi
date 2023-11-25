@@ -47,19 +47,19 @@ def rm_unicode(src, trg):
 
     return src, trg
 
-def split_dot(text):
+def split_char(text, ch):
     s = ""
     for i in range(len(text)):
         c = text[i]
-        if c == ".":
-            if i < len(text) - 1 and text[i + 1] == ".": 
+        if c == ch:
+            if i < len(text) - 1 and text[i + 1] == ch: 
                 c = c + " "
         s = s + c
     return s
 
-def split_dots(src, trg):
-    src = split_dot(src)
-    trg = split_dot(trg)
+def split_chars(src, trg, char):
+    src = split_char(src, char)
+    trg = split_char(trg, char)
 
     return src, trg
 
@@ -78,7 +78,26 @@ def clean(path):
                     s, t = clean_link(s, t)
                     s, t = split_nums(s, t)
                     s, t = rm_unicode(s, t)
-                    s, t = split_dots(s, t)
+                    s, t = split_chars(s, t, ".")
+                    s, t = split_chars(s, t, "-")
+                    s, t = split_chars(s, t, "_")
+                    s, t = split_chars(s, t, "*")
+                    s, t = split_chars(s, t, "!")
+                    s, t = split_chars(s, t, "$")
+                    s, t = split_chars(s, t, "%")
+                    s, t = split_chars(s, t, "^")                 
+                    s, t = split_chars(s, t, "(")
+                    s, t = split_chars(s, t, ")")                 
+                    s, t = split_chars(s, t, "{")
+                    s, t = split_chars(s, t, "}")                 
+                    s, t = split_chars(s, t, "[")                 
+                    s, t = split_chars(s, t, "]")                 
+                    s, t = split_chars(s, t, "\"")
+                    s, t = split_chars(s, t, "\\")                 
+                    s, t = split_chars(s, t, "/")                 
+                    s, t = split_chars(s, t, ":")
+                    s, t = split_chars(s, t, ",")                 
+                    s, t = split_chars(s, t, "★")
                     max_len_src = max(max_len_src, len(s.split()))
                     max_len_trg = max(max_len_trg, len(t.split()))
                 sources.append(s)
