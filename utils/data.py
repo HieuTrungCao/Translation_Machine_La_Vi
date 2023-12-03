@@ -5,7 +5,8 @@ import dill as pickle
 import pandas as pd
 from torchtext import data
 
-from laonlp.tokenize import word_tokenize
+from laonlp.tokenize import word_tokenize as lao_tokenize
+from underthesea import word_tokenize as vi_tokenize
 
 nltk.download('punkt')
 
@@ -64,10 +65,10 @@ def write_file(file_dir, content):
     f.close()
 
 def t_src_tokenizer(sentence):
-    return word_tokenize(sentence.strip())
+    return lao_tokenize(sentence.strip())
 
 def t_trg_tokenizer(sentence):
-    return nltk.word_tokenize(sentence.strip())
+    return vi_tokenize(sentence.strip())
 
 def create_fields(src_lang, trg_lang):
     
