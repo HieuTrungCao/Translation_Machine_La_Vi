@@ -113,8 +113,8 @@ def clean(path):
 
 # &quot;
 
-# paths = ["data/la_vi/Dev/dev2023", "data/la_vi/Train/train2023", "data/la_vi/Test/test"]
+paths = ["data/la_vi/Dev/dev2023", "data/la_vi/Train/train2023", "data/la_vi/Test/test"]
 
-# clean(paths[0])
-# clean(paths[1])
-# clean(paths[2])
+clean(paths[0])
+clean(paths[1])
+clean(paths[2])
