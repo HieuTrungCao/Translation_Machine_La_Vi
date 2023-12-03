@@ -68,7 +68,7 @@ def t_src_tokenizer(sentence):
     return lao_tokenize(sentence.strip())
 
 def t_trg_tokenizer(sentence):
-    return vi_tokenize(sentence.strip())
+    return nltk.tokenize.word_tokenize(sentence.strip())
 
 def create_fields(src_lang, trg_lang):
     
