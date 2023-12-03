@@ -34,7 +34,12 @@ class Transformer(nn.Module):
         if('train_data_location' in opt or 'train_data_location' in opt.get("data", {})):
             # monolingual data detected
             data_opt = opt if 'train_data_location' in opt else opt["data"]
-            self.loader = DefaultLoader(data_opt['train_data_location'], eval_path=data_opt.get('eval_data_location', None), language_tuple=(data_opt["src_lang"], data_opt["trg_lang"]), option=opt)
+            self.loader = DefaultLoader(
+                data_opt['train_data_location'],
+                eval_path=data_opt.get('eval_data_location', None),
+                language_tuple=(data_opt["src_lang"], data_opt["trg_lang"]),
+                option=opt
+            )
         elif('data' in opt):
             # multilingual data with multiple corpus in [data][train] namespace
             self.loader = MultiLoader(opt["data"]["train"], valid=opt["data"].get("valid", None), option=opt)
@@ -330,7 +335,12 @@ class Transformer(nn.Module):
 #                bleuscore = bleu_single(self, self.loader._eval_data)
 #                bleuscore = bleu_batch(self, self.loader._eval_data, batch_size=opt.get('eval_batch_size', const.DEFAULT_EVAL_BATCH_SIZE))
                 valid_src_lang, valid_trg_lang = self.loader.language_tuple
-                bleuscore = bleu_batch_iter(self, self.valid_iter, src_lang=valid_src_lang, trg_lang=valid_trg_lang)
+                bleuscore = bleu_batch_iter(
+                    self,
+                    self.valid_iter,
+                    src_lang=valid_src_lang,
+                    trg_lang=valid_trg_lang
+                )
 
 #                save_model_to_path(model, model_dir, checkpoint_idx=epoch+1)
                 saver.save_and_clear_model(model, model_dir, checkpoint_idx=epoch+1, maximum_saved_model=opt.get('maximum_saved_model_train', const.DEFAULT_NUM_KEEP_MODEL_TRAIN))

@@ -64,7 +64,6 @@ def split_chars(src, trg, char):
     return src, trg
 
 def clean(path):
-
     sources = []
     targets = []
 
@@ -100,8 +99,8 @@ def clean(path):
                     s, t = split_chars(s, t, "★")
                     max_len_src = max(max_len_src, len(s.split()))
                     max_len_trg = max(max_len_trg, len(t.split()))
-                sources.append(s)
-                targets.append(t)
+                    sources.append(s)
+                    targets.append(t)
     
     with io.open(path + ".lo", mode='w', encoding='utf-8') as src:
         src.writelines(sources)
