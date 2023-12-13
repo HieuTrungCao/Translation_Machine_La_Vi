@@ -5,7 +5,7 @@ import dill as pickle
 import pandas as pd
 from torchtext import data
 
-from laonlp.tokenize import word_tokenize as lo_tokenize
+from laonlp.tokenize import word_tokenize as lao_tokenize
 from underthesea import word_tokenize as vi_tokenize
 from pyvi import ViTokenizer
 
