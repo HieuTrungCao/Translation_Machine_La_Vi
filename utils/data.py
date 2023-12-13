@@ -77,15 +77,10 @@ def t_src_tokenizer(sentence):
 #     return nltk.tokenize.word_tokenize(sentence.strip())
 
 def t_trg_tokenizer(sentence):
-# <<<<<<< HEAD
-#     token = [
-#         word
-#         for word in sentence.strip().split()
-#         if (not any(char.isdigit() for char in word)) or word.isdigit()
-#     ]
-#     return token
-# =======
-    return ViTokenizer.tokenize(sentence.strip())
+    token = ViTokenizer.tokenize(sentence.strip()).split()
+    for i in range(0, len(token)):
+        token[i] = token[i].replace("_", " ")
+    return token
 
 >>>>>>> 98fee5e6f6f6e6aae7d407b1f669d96f14ce122c
 
