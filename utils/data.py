@@ -7,6 +7,7 @@ from torchtext import data
 
 from laonlp.tokenize import word_tokenize as lo_tokenize
 from underthesea import word_tokenize as vi_tokenize
+from pyvi import ViTokenizer
 
 nltk.download("punkt")
 
@@ -84,7 +85,7 @@ def t_trg_tokenizer(sentence):
 #     ]
 #     return token
 # =======
-    return vi_tokenize(sentence)
+    return ViTokenizer.tokenize(sentence.strip())
 
 >>>>>>> 98fee5e6f6f6e6aae7d407b1f669d96f14ce122c
 
