@@ -47,24 +47,23 @@ def rm_unicode(src, trg):
 
     return src, trg
 
-def split_dot(text):
+def split_char(text, ch):
     s = ""
     for i in range(len(text)):
         c = text[i]
-        if c == ".":
-            if i < len(text) - 1 and text[i + 1] == ".": 
+        if c == ch:
+            if i < len(text) - 1 and text[i + 1] == ch: 
                 c = c + " "
         s = s + c
     return s
 
-def split_dots(src, trg):
-    src = split_dot(src)
-    trg = split_dot(trg)
+def split_chars(src, trg, char):
+    src = split_char(src, char)
+    trg = split_char(trg, char)
 
     return src, trg
 
 def clean(path):
-
     sources = []
     targets = []
 
@@ -78,11 +77,30 @@ def clean(path):
                     s, t = clean_link(s, t)
                     s, t = split_nums(s, t)
                     s, t = rm_unicode(s, t)
-                    s, t = split_dots(s, t)
+                    s, t = split_chars(s, t, ".")
+                    s, t = split_chars(s, t, "-")
+                    s, t = split_chars(s, t, "_")
+                    s, t = split_chars(s, t, "*")
+                    s, t = split_chars(s, t, "!")
+                    s, t = split_chars(s, t, "$")
+                    s, t = split_chars(s, t, "%")
+                    s, t = split_chars(s, t, "^")                 
+                    s, t = split_chars(s, t, "(")
+                    s, t = split_chars(s, t, ")")                 
+                    s, t = split_chars(s, t, "{")
+                    s, t = split_chars(s, t, "}")                 
+                    s, t = split_chars(s, t, "[")                 
+                    s, t = split_chars(s, t, "]")                 
+                    s, t = split_chars(s, t, "\"")
+                    s, t = split_chars(s, t, "\\")                 
+                    s, t = split_chars(s, t, "/")                 
+                    s, t = split_chars(s, t, ":")
+                    s, t = split_chars(s, t, ",")                 
+                    s, t = split_chars(s, t, "★")
                     max_len_src = max(max_len_src, len(s.split()))
                     max_len_trg = max(max_len_trg, len(t.split()))
-                sources.append(s)
-                targets.append(t)
+                    sources.append(s)
+                    targets.append(t)
     
     with io.open(path + ".lo", mode='w', encoding='utf-8') as src:
         src.writelines(sources)
@@ -95,8 +113,8 @@ def clean(path):
 
 # &quot;
 
-# paths = ["data/la_vi/Dev/dev2023", "data/la_vi/Train/train2023", "data/la_vi/Test/test"]
+paths = ["data/la_vi/Dev/dev2023", "data/la_vi/Train/train2023", "data/la_vi/Test/test"]
 
-# clean(paths[0])
-# clean(paths[1])
-# clean(paths[2])
+clean(paths[0])
+clean(paths[1])
+clean(paths[2])
