@@ -82,8 +82,6 @@ def t_trg_tokenizer(sentence):
         token[i] = token[i].replace("_", " ")
     return token
 
->>>>>>> 98fee5e6f6f6e6aae7d407b1f669d96f14ce122c
-
 def create_fields(src_lang, trg_lang):
     # print("loading spacy tokenizers...")
     #
