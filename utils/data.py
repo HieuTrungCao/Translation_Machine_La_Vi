@@ -67,8 +67,16 @@ def write_file(file_dir, content):
 def t_src_tokenizer(sentence):
     return lao_tokenize(sentence.strip())
 
+# def t_trg_tokenizer(sentence):
+#     return nltk.tokenize.word_tokenize(sentence.strip())
+
 def t_trg_tokenizer(sentence):
-    return nltk.tokenize.word_tokenize(sentence.strip())
+    token = [
+        word
+        for word in sentence.strip().split()
+        if (not any(char.isdigit() for char in word)) or word.isdigit()
+    ]
+    return token
 
 def create_fields(src_lang, trg_lang):
     
