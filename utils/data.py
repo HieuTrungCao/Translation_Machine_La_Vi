@@ -73,14 +73,14 @@ def t_src_tokenizer(sentence):
     return lao_tokenize(sentence.strip())
 
 
-# def t_trg_tokenizer(sentence):
-#     return nltk.tokenize.word_tokenize(sentence.strip())
-
 def t_trg_tokenizer(sentence):
-    token = ViTokenizer.tokenize(sentence.strip()).split()
-    for i in range(0, len(token)):
-        token[i] = token[i].replace("_", " ")
-    return token
+    return nltk.tokenize.word_tokenize(sentence.strip())
+
+# def t_trg_tokenizer(sentence):
+#     token = ViTokenizer.tokenize(sentence.strip()).split()
+#     for i in range(0, len(token)):
+#         token[i] = token[i].replace("_", " ")
+#     return token
 
 def create_fields(src_lang, trg_lang):
     # print("loading spacy tokenizers...")
