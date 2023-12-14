@@ -13,7 +13,7 @@ from modules.optim import optimizers, ScheduledOptim
 
 import utils.save as saver
 from utils.decode_old import create_masks, translate_sentence
-#from utils.data import create_fields, create_dataset, read_data, read_file, write_file
+from utils.data import create_fields, create_dataset, read_data, read_file, write_file
 from utils.loss import LabelSmoothingLoss
 from utils.metric import bleu, bleu_batch_iter, bleu_single, bleu_batch
 #from utils.save import load_model_from_path, check_model_in_path, save_and_clear_model, write_model_score, load_model_score, save_model_best_to_path, load_model
@@ -34,12 +34,17 @@ class Transformer(nn.Module):
         if('train_data_location' in opt or 'train_data_location' in opt.get("data", {})):
             # monolingual data detected
             data_opt = opt if 'train_data_location' in opt else opt["data"]
-            self.loader = DefaultLoader(data_opt['train_data_location'], eval_path=data_opt.get('eval_data_location', None), language_tuple=(data_opt["src_lang"], data_opt["trg_lang"]), option=opt)
+            self.loader = DefaultLoader(
+                data_opt['train_data_location'],
+                eval_path=data_opt.get('eval_data_location', None),
+                language_tuple=(data_opt["src_lang"], data_opt["trg_lang"]),
+                option=opt
+            )
         elif('data' in opt):
             # multilingual data with multiple corpus in [data][train] namespace
             self.loader = MultiLoader(opt["data"]["train"], valid=opt["data"].get("valid", None), option=opt)
         # input fields
-        self.SRC, self.TRG = self.loader.build_field(lower=opt.get("lowercase", const.DEFAULT_LOWERCASE))
+        self.SRC, self.TRG = create_fields(data_opt["src_lang"], data_opt["trg_lang"])
 #        self.SRC = data.Field(lower=opt.get("lowercase", const.DEFAULT_LOWERCASE))
 #        self.TRG = data.Field(lower=opt.get("lowercase", const.DEFAULT_LOWERCASE), eos_token='<eos>')
 
@@ -330,7 +335,12 @@ class Transformer(nn.Module):
 #                bleuscore = bleu_single(self, self.loader._eval_data)
 #                bleuscore = bleu_batch(self, self.loader._eval_data, batch_size=opt.get('eval_batch_size', const.DEFAULT_EVAL_BATCH_SIZE))
                 valid_src_lang, valid_trg_lang = self.loader.language_tuple
-                bleuscore = bleu_batch_iter(self, self.valid_iter, src_lang=valid_src_lang, trg_lang=valid_trg_lang)
+                bleuscore = bleu_batch_iter(
+                    self,
+                    self.valid_iter,
+                    src_lang=valid_src_lang,
+                    trg_lang=valid_trg_lang
+                )
 
 #                save_model_to_path(model, model_dir, checkpoint_idx=epoch+1)
                 saver.save_and_clear_model(model, model_dir, checkpoint_idx=epoch+1, maximum_saved_model=opt.get('maximum_saved_model_train', const.DEFAULT_NUM_KEEP_MODEL_TRAIN))

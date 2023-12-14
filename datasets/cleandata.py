@@ -1,94 +1,120 @@
-import io
 import os
+import io
 import re
 
-class CleanData:
-    def __init__(self,config =None):
-        if config is not None:
-            data_opt= config if 'train_data_location' in config else config["data"]
-            self.train_data_path= data_opt['train_data_location']
-            self.test_data_path= data_opt['eval_data_location']
-            self.language_tuple= (data_opt["src_lang"], data_opt["trg_lang"])
-        else:
-            print("Could load file")
-    @staticmethod
-    def custom_split_tokenize(sentence):
-                """Replace default tokenize
-                """
-                tokens = sentence.strip().split()
-                i=0
-                while i < len(tokens):
-                    # tokens[i] = tokens[i].replace','')
-                    tk= tokens[i]
-                    if re.search(r'[\-\+\*\(\)\{\}\<\>\°\/\\\=\@\#\$\%\^\&\_\[\]\~\`]',tk):
-                        tokens.remove(tk)
-                        i-=1
-                    i+=1
-                return tokens
-    @staticmethod        
-    def clean_sentence(sentence):
-        special_characters ='"@#$%^*+_\/=<>'
-        end_punct = ',.]>)}?!:'
-        open_punct = '({[<}'
-        for char in special_characters:
-            sentence = re.sub(pattern="\\"+char,repl="",string= sentence)
-        #Add a space infront of puntation characters
-        for char in end_punct:
-            char_pattern = re.escape(char)
-            sentence = re.sub(pattern=char_pattern,repl=" "+char+" ",string=sentence) 
-        for char in open_punct:
-            char_pattern = re.escape(char)
-            sentence = re.sub(pattern=char_pattern,repl=char+" ",string=sentence) 
-        #delete duplicate spaces 
-        sentence = re.sub(pattern="  "+char,repl=" ",string=sentence)
-      
-        return sentence
-    def clean_file(self, mode):
-        data_path=''
-        if mode == 'train':
-            data_path = self.train_data_path
-        elif mode == 'infer':
-            data_path= self.test_data_path
-        src_path, trg_path = tuple(os.path.expanduser(data_path + x) for x in self.language_tuple)
+def check_double(src, trg):
+    srcs = src.strip().split()
+    trgs = trg.strip().split()
 
-        clean_src_path, clean_trg_path = tuple(os.path.expanduser(data_path +"_clean"+x) for x in self.language_tuple)
-        
-        
-        special_characters ='"@#$%^*+_\/=<>'
-        end_punct = ',.]>)}?!:'
-        open_punct = '({[<}'
-            
-        with io.open(src_path, mode='r', encoding='utf-8') as src_file, \
-                io.open(clean_src_path, mode='w', encoding='utf-8') as clean_src_file:
-            content = src_file.read()
-            #Delete special characters
-            
-            for char in special_characters:
-                content = re.sub(pattern="\\"+char,repl="",string= content)
-            #Add a space infront of puntation characters
-            for char in end_punct:
-                char_pattern = re.escape(char)
-                content = re.sub(pattern=char_pattern,repl=" "+char,string=content) 
-            for char in open_punct:
-                char_pattern = re.escape(char)
-                content = re.sub(pattern=char_pattern,repl=char+" ",string=content) 
-            #delete duplicate spaces 
-            content = re.sub(pattern="  "+char,repl=" ",string=content)
-            clean_src_file.write(content)
-                
-        with io.open(trg_path, mode='r', encoding='utf-8') as trg_file, \
-                io.open(clean_trg_path, mode='w', encoding='utf-8') as clean_trg_file:
-            content = trg_file.read()
-            #Delete special characters   
-            for char in special_characters:
-                content = re.sub(pattern="\\"+char,repl="",string= content)
-            #Add a space infront of puntation characters
-            for char in end_punct:
-                char_pattern = re.escape(char)
-                content = re.sub(pattern=char_pattern,repl=" "+char,string=content) 
-            for char in open_punct:
-                char_pattern = re.escape(char)
-                content = re.sub(pattern=char_pattern,repl=char+" ",string=content)   
-            content = re.sub(pattern="  "+char,repl=" ",string=content)
-            clean_trg_file.write(content)
-        print("Files cleaned successfully!")
+    length = min(len(srcs), len(trgs))
+
+    sum = 0
+
+    for i in range(length):
+        if srcs[i] == trgs[i]:
+            sum += 1
+    return (sum / length) > 0.7
+
+def clean_link(src, trg):
+    regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    
+    src = re.sub(regex, "http", src)
+    trg = re.sub(regex, "http", trg)
+
+    return src, trg
+
+def split_num(text):
+    s = ""
+    for i in range(len(text)):
+        c = text[i]
+        if c.isdigit():
+            if i < len(text) - 1 and text[i + 1] != " ": 
+                c = c + " "
+            if i > 0 and s[-1] != " ":
+                c = " " + c
+        s = s + c
+    return s
+
+def split_nums(src, trg):
+    src = split_num(src)
+    trg = split_num(trg)
+    
+    return src, trg
+
+def rm_unicode(src, trg):
+    src = re.sub("&quot;", "\"", src)
+    trg = re.sub("&quot;", "\"", trg)
+
+    return src, trg
+
+def split_char(text, ch):
+    s = ""
+    for i in range(len(text)):
+        c = text[i]
+        if c == ch:
+            if i < len(text) - 1 and text[i + 1] == ch: 
+                c = c + " "
+        s = s + c
+    return s
+
+def split_chars(src, trg, char):
+    src = split_char(src, char)
+    trg = split_char(trg, char)
+
+    return src, trg
+
+def clean(path):
+    sources = []
+    targets = []
+
+    max_len_src = 0
+    max_len_trg = 0
+
+    with io.open(path + ".lo", mode='r', encoding='utf-8') as src:
+        with io.open(path + ".vi", mode='r', encoding='utf-8') as trg:
+            for s, t in zip(src.readlines(), trg.readlines()):
+                if not check_double(s, t):
+                    s, t = clean_link(s, t)
+                    s, t = split_nums(s, t)
+                    s, t = rm_unicode(s, t)
+                    s, t = split_chars(s, t, ".")
+                    s, t = split_chars(s, t, "-")
+                    s, t = split_chars(s, t, "_")
+                    s, t = split_chars(s, t, "*")
+                    s, t = split_chars(s, t, "!")
+                    s, t = split_chars(s, t, "$")
+                    s, t = split_chars(s, t, "%")
+                    s, t = split_chars(s, t, "^")                 
+                    s, t = split_chars(s, t, "(")
+                    s, t = split_chars(s, t, ")")                 
+                    s, t = split_chars(s, t, "{")
+                    s, t = split_chars(s, t, "}")                 
+                    s, t = split_chars(s, t, "[")                 
+                    s, t = split_chars(s, t, "]")                 
+                    s, t = split_chars(s, t, "\"")
+                    s, t = split_chars(s, t, "\\")                 
+                    s, t = split_chars(s, t, "/")                 
+                    s, t = split_chars(s, t, ":")
+                    s, t = split_chars(s, t, ",")                 
+                    s, t = split_chars(s, t, "★")
+                    max_len_src = max(max_len_src, len(s.split()))
+                    max_len_trg = max(max_len_trg, len(t.split()))
+                    sources.append(s)
+                    targets.append(t)
+    
+    with io.open(path + ".lo", mode='w', encoding='utf-8') as src:
+        src.writelines(sources)
+    
+    with io.open(path + ".vi", mode='w', encoding='utf-8') as trg:
+        trg.writelines(targets)
+
+    print("max src: ", max_len_src)
+    print("max trg: ", max_len_trg)
+
+# &quot;
+
+paths = ["data/la_vi/Dev/dev2023", "data/la_vi/Train/train2023", "data/la_vi/Test/test"]
+
+clean(paths[0])
+clean(paths[1])
+clean(paths[2])
